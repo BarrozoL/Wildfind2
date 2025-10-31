@@ -21,6 +21,25 @@ class MapController extends Controller
 
         $limit = $data['limit'] ?? 3000;
 
+
+    $items = \DB::table('sightings')
+        ->leftJoin('species', 'species.id', '=', 'sightings.species_id')
+        ->select(
+            'sightings.id','sightings.species_id','sightings.lat','sightings.lng','sightings.observed_at',
+            'species.common_name','species.scientific_name'
+            )
+        ->where('status','verified')
+        ->whereBetween('lat', [$data['minLat'], $data['maxLat']])
+        ->whereBetween('lng', [$data['minLng'], $data['maxLng']])
+        ->when(!empty($data['species_id']), fn($q)=>$q->where('species_id',$data['species_id']))
+        ->when(!empty($data['from']) && !empty($data['to']), fn($q)=>$q->whereBetween('observed_at', [$data['from'],$data['to']]))
+        ->orderByDesc('observed_at')
+        ->limit($limit)
+        ->get();
+        
+        return response()->json(['items'=>$items]);
+
+
         $items = Sighting::query()
             ->select(['id','species_id','lat','lng','observed_at'])
             ->verified()
