@@ -1,4 +1,5 @@
 import LeafletMap from '@/components/map/LeafletMap';
+import { Link } from '@inertiajs/react';
 import type { BBox, Feature, Point } from 'geojson';
 import L, { DivIcon, LatLngBounds } from 'leaflet';
 import { useEffect, useMemo, useRef, useState } from 'react';
@@ -45,7 +46,7 @@ type ApiResponse = { items: Sighting[] };
 type Props = {}; // Inertia page can pass props later
 
 // --- Map viewport tracker
-function ViewportTracker({
+export function ViewportTracker({
     onChange,
 }: {
     onChange: (b: LatLngBounds, z: number) => void;
@@ -213,11 +214,16 @@ export default function MapPage(_props: Props) {
     return (
         <div className="p-0">
             <div className="flex h-16 items-center gap-3 px-4">
-                <h1 className="text-xl font-semibold">Mapa</h1>
+                <h1 className="text-xl font-semibold">Map</h1>
                 {loading && (
-                    <span className="text-sm opacity-70">a carregar…</span>
+                    <span className="text-sm opacity-70">Loading…</span>
                 )}
                 <div className="ml-auto flex items-center gap-2">
+                    <button className="cursor-pointer rounded border px-2 py-1">
+                        {' '}
+                        <Link href="/">Back to Homepage</Link>
+                    </button>
+
                     <button
                         className="cursor-pointer rounded border px-2 py-1"
                         onClick={() => {
@@ -226,9 +232,14 @@ export default function MapPage(_props: Props) {
                             setTo('');
                         }}
                     >
-                        Limpar
+                        Clear
                     </button>
-
+                    <Link
+                        href="/sightings/create"
+                        className="ml-3 rounded bg-green-600 px-3 py-2 text-white"
+                    >
+                        New sighting
+                    </Link>
                     <button
                         className="cursor-pointer rounded border px-2 py-1"
                         onClick={() => {
@@ -239,7 +250,7 @@ export default function MapPage(_props: Props) {
                             setTo(toD.toISOString().slice(0, 10));
                         }}
                     >
-                        Últimos 7 dias
+                        Last 7 days
                     </button>
 
                     <button
@@ -252,11 +263,11 @@ export default function MapPage(_props: Props) {
                             setTo(toD.toISOString().slice(0, 10));
                         }}
                     >
-                        Últimos 30 dias
+                        Last 30 days
                     </button>
 
                     <select
-                        className="cursor-pointer rounded border px-2 py-1"
+                        className="px- cursor-pointer rounded border px-1 py-1"
                         value={speciesId}
                         onChange={(e) =>
                             setSpeciesId(
@@ -264,7 +275,7 @@ export default function MapPage(_props: Props) {
                             )
                         }
                     >
-                        <option value="">Todas as espécies</option>
+                        <option value="">All species</option>
                         {species.map((s) => (
                             <option key={s.id} value={s.id}>
                                 {s.common_name ?? s.scientific_name}
@@ -306,7 +317,7 @@ export default function MapPage(_props: Props) {
 }
 
 // Renders cluster bubbles as Markers and single points as CircleMarkers
-function ClusterMarkers({
+export function ClusterMarkers({
     clusters,
     getExpansionZoom,
 }: {
