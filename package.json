@@ -41,6 +41,7 @@
         "@radix-ui/react-toggle": "^1.1.2",
         "@radix-ui/react-toggle-group": "^1.1.2",
         "@radix-ui/react-tooltip": "^1.1.8",
+        "@supabase/supabase-js": "^2.78.0",
         "@tailwindcss/vite": "^4.1.11",
         "@types/geojson": "^7946.0.16",
         "@types/react": "^19.0.3",
